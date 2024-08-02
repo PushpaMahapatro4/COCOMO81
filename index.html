@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COCOMO 81 Effort Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            margin-right: 10px;
+        }
+        input, select {
+            margin-bottom: 10px;
+        }
+        .result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>COCOMO 81 Effort Calculator</h1>
+    <form id="cocomoForm">
+        <label for="mode">Project Mode:</label>
+        <select id="mode" required>
+            <option value="organic">Organic</option>
+            <option value="semiDetached">Semi-Detached</option>
+            <option value="embedded">Embedded</option>
+        </select><br>
+
+        <label for="kdsi">Size of Project (KDSI):</label>
+        <input type="number" id="kdsi" min="1" required><br>
+
+        <button type="button" onclick="calculateEffort()">Calculate Effort</button>
+    </form>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        function calculateEffort() {
+            const mode = document.getElementById('mode').value;
+            const kdsi = parseFloat(document.getElementById('kdsi').value);
+
+            let a, b, c, d;
+
+            // COCOMO 81 coefficients for different modes
+            switch (mode) {
+                case 'organic':
+                    a = 2.4; b = 1.05; c = 2.5; d = 0.38;
+                    break;
+                case 'semiDetached':
+                    a = 3.0; b = 1.12; c = 2.5; d = 0.35;
+                    break;
+                case 'embedded':
+                    a = 3.6; b = 1.20; c = 2.5; d = 0.32;
+                    break;
+            }
+
+            // Calculate effort (in person-months), development time (in months), and people required
+            const effort = a * Math.pow(kdsi, b);
+            const developmentTime = c * Math.pow(effort, d);
+            const peopleRequired = effort / developmentTime;
+
+            // Display results
+            document.getElementById('result').innerHTML = `
+                <h2>Results:</h2>
+                <p>Effort: ${effort.toFixed(2)} person-months</p>
+                <p>Development Time: ${developmentTime.toFixed(2)} months</p>
+                <p>People Required: ${Math.ceil(peopleRequired)} persons</p>
+            `;
+        }
+    </script>
+</body>
+</html>
